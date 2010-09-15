@@ -1,8 +1,22 @@
 <html>
   <head>
-    <script type="application/javascript" src="astoroids.js"></script>
+    <script src="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/demos/google/resources/moz/matrix4x4.js" type="application/javascript"></script>
+    <script src="astoroids.js" type="application/javascript"></script>
+    <script id="v" type="x-shader/x-vertex">
+      uniform mat4 modelview;
+      attribute vec3 position;
+
+      void main() {
+        gl_Position = modelview * vec4(position, 1);
+      }
+    </script>
+    <script id="f" type="x-shader/x-fragment">
+      void main() {
+        gl_FragColor = vec4(1);
+      }
+    </script>
   </head>
-  <body>
-    <canvas id="c" width="1024" height="768"></canvas>
+  <body onload="load();">
+    <canvas id="c"></canvas>
   </body>
 </html>
