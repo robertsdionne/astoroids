@@ -1,3 +1,4 @@
+// Copyright 2010 Robert Scott Dionne. All Rights Reserved.
 var load = function() {
   var canvas = document.getElementById('c');
   canvas.width = 400;
