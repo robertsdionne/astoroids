@@ -1,14 +1,56 @@
 <!-- Copyright 2010 Robert Scott Dionne. All Rights Reserved. -->
 <html>
   <head>
-    <script src="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/demos/google/resources/moz/matrix4x4.js" type="application/javascript"></script>
     <script src="astoroids.js" type="application/javascript"></script>
     <script id="v" type="x-shader/x-vertex">
-      uniform mat4 modelview;
-      attribute vec3 position;
+      uniform float size;
+      uniform vec3 xyChi;
+      uniform vec3 abRho;
+      attribute vec2 position;
+
+      float pi = 3.141592653589793;
 
       void main() {
-        gl_Position = modelview * vec4(position, 1);
+        float chi = 2.0 * pi * xyChi.z;
+        mat2 r = mat2(1.0);
+        r[0][0] = cos(chi);
+        r[1][0] = -sin(chi);
+        r[0][1] = sin(chi);
+        r[1][1] = cos(chi);
+        vec2 xy = r * position.xy;
+        float theta = 2.0 * pi * (xy.x + xyChi.x + 0.15);
+        float phi = 2.0 * pi * (xy.y + xyChi.y + 0.75);
+        float rho = 2.0 * pi * abRho.z;
+        float a = abRho.x;
+        float b = abRho.y;
+        vec4 origin = vec4(vec3(0.0), 1.0);
+        mat4 ta = mat4(1.0);
+        ta[3][0] = a;
+        mat4 rz = mat4(1.0);
+        rz[0][0] = cos(theta);
+        rz[1][0] = -sin(theta);
+        rz[0][1] = sin(theta);
+        rz[1][1] = cos(theta);
+        mat4 tb = mat4(1.0);
+        tb[3][0] = b;
+        mat4 ry = mat4(1.0);
+        ry[0][0] = cos(phi);
+        ry[2][0] = sin(phi);
+        ry[0][2] = -sin(phi);
+        ry[2][2] = cos(phi);
+        mat4 rx = mat4(1.0);
+        rx[1][1] = cos(rho);
+        rx[2][1] = -sin(rho);
+        rx[1][2] = sin(rho);
+        rx[2][2] = cos(rho);
+        mat4 p = mat4(1.0);
+        p[3][3] = 0.0;
+        p[2][3] = -1.0;
+        mat4 t = mat4(1.0);
+        t[3][1] = 0.25;
+        t[3][2] = -1.0;
+        gl_Position = p * t * rx * ry * tb * rz * ta * origin;
+        gl_PointSize = size;
       }
     </script>
     <script id="f" type="x-shader/x-fragment">
