@@ -174,7 +174,7 @@ var onChange = function(gl, width, height) {
   gl.viewport(0, 0, width, height);
 };
 
-var abRho = new Float32Array([0.5, 0.2, 0.125]);
+var abRho = new Float32Array([0.25, 0.5, 0.125]);
 
 var onDraw = function(gl, p, b, g) {
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
