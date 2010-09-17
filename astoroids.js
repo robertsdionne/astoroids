@@ -104,8 +104,8 @@ var update = function() {
     BYV = YV + 0.005 * Math.sin(2.0 * pi * CHI);
   }
   if (keys.up) {
-    XV += 0.0001 * Math.cos(2.0 * pi * CHI);
-    YV += 0.0001 * Math.sin(2.0 * pi * CHI);
+    XV += 0.00005 * Math.cos(2.0 * pi * CHI);
+    YV += 0.00005 * Math.sin(2.0 * pi * CHI);
   }
   if (keys.left) {
     CHI -= 0.01;
@@ -118,7 +118,7 @@ var update = function() {
 };
 
 var N = 3;
-var M = 40;
+var M = 400;
 
 var onCreate = function(gl, p, b, g) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -158,11 +158,9 @@ var onCreate = function(gl, p, b, g) {
   gl.bufferData(gl.ARRAY_BUFFER, a.byteLength, gl.STATIC_DRAW);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, a);
 
-  var data2 = [];
+  var data2 = [0.0, 0.0];
   for (var i = 0; i < M; ++i) {
-    for (var j = 0; j < M; ++j) {
-      data2.push(i * 1.0 / M, j * 1.0 / M);
-    }
+    data2.push(Math.random(), Math.random());
   }
 
   var d = new Float32Array(data2);
@@ -176,7 +174,7 @@ var onChange = function(gl, width, height) {
   gl.viewport(0, 0, width, height);
 };
 
-var abRho = new Float32Array([0.50, 0.2, 0.125]);
+var abRho = new Float32Array([0.5, 0.2, 0.125]);
 
 var onDraw = function(gl, p, b, g) {
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
@@ -196,7 +194,7 @@ var onDraw = function(gl, p, b, g) {
   gl.uniform3fv(p.abRho, abRho);
   gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(p.position);
-  gl.drawArrays(gl.POINTS, 0, M * M);
+  gl.drawArrays(gl.POINTS, 0, M);
   gl.disableVertexAttribArray(p.position);
   gl.flush();
 
