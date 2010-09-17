@@ -64,7 +64,8 @@ var load = function() {
   var p = gl.createProgram();
   var b = gl.createBuffer();
   var g = gl.createBuffer();
-  onCreate(gl, p, b, g);
+  var asteroid = gl.createBuffer();
+  onCreate(gl, p, b, g, asteroid);
   var width, height;
   window.setInterval(function() {
     if (width !== canvas.width || height !== canvas.height) {
@@ -73,7 +74,7 @@ var load = function() {
       onChange(gl, width, height);
     }
     update();
-    onDraw(gl, p, b, g);
+    onDraw(gl, p, b, g, asteroid);
   }, 10);
 };
 
@@ -90,6 +91,12 @@ var BY = 0.0;
 var BXV = 0.0;
 var BYV = 0.0;
 
+var asteroidX = Math.random();
+var asteroidY = Math.random();
+
+var asteroidXV = (Math.random() - 0.5) / 250.0;
+var asteroidYV = (Math.random() - 0.5) / 250.0;
+
 var pi = 3.141592653589793;
 
 var update = function() {
@@ -97,6 +104,8 @@ var update = function() {
   Y += YV;
   BX += BXV;
   BY += BYV;
+  asteroidX += asteroidXV;
+  asteroidY += asteroidYV;
   if (keys.fire) {
     BX = X;
     BY = Y;
@@ -118,9 +127,9 @@ var update = function() {
 };
 
 var N = 3;
-var M = 400;
+var M = 8000;
 
-var onCreate = function(gl, p, b, g) {
+var onCreate = function(gl, p, b, g, asteroid) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   var v = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(v, document.getElementById('v').text);
@@ -167,6 +176,18 @@ var onCreate = function(gl, p, b, g) {
   gl.bindBuffer(gl.ARRAY_BUFFER, g);
   gl.bufferData(gl.ARRAY_BUFFER, d.byteLength, gl.STATIC_DRAW);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, d);
+
+  var data3 = [];
+  for (var i = 0; i < 24; ++i) {
+    data3.push(
+        0.01 * Math.cos(i * 2.0 * pi / 24.0),
+        0.01 * Math.sin(i * 2.0 * pi / 24.0));
+  }
+
+  var asteroidBuffer = new Float32Array(data3);
+  gl.bindBuffer(gl.ARRAY_BUFFER, asteroid);
+  gl.bufferData(gl.ARRAY_BUFFER, asteroidBuffer.byteLength, gl.STATIC_DRAW);
+  gl.bufferSubData(gl.ARRAY_BUFFER, 0, asteroidBuffer);
 };
 
 
@@ -174,9 +195,9 @@ var onChange = function(gl, width, height) {
   gl.viewport(0, 0, width, height);
 };
 
-var abRho = new Float32Array([0.25, 0.5, 0.125]);
+var abRho = new Float32Array([0.32, 0.44, 0.125]);
 
-var onDraw = function(gl, p, b, g) {
+var onDraw = function(gl, p, b, g, asteroid) {
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   gl.bindBuffer(gl.ARRAY_BUFFER, b);
   var xyChi = new Float32Array([X, Y, CHI]);
@@ -200,12 +221,22 @@ var onDraw = function(gl, p, b, g) {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, g);
   var xyChi = new Float32Array([BX, BY, 0.0]);
-  gl.uniform1f(p.size, 2.0);
+  gl.uniform1f(p.size, 2.5);
   gl.uniform3fv(p.xyChi, xyChi);
   gl.uniform3fv(p.abRho, abRho);
   gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(p.position);
   gl.drawArrays(gl.POINTS, 0, 1);
+  gl.disableVertexAttribArray(p.position);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, asteroid);
+  var xyChi = new Float32Array([asteroidX, asteroidY, 0.0]);
+  gl.uniform1f(p.size, 1.0);
+  gl.uniform3fv(p.xyChi, xyChi);
+  gl.uniform3fv(p.abRho, abRho);
+  gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(p.position);
+  gl.drawArrays(gl.LINE_LOOP, 0, 24);
   gl.disableVertexAttribArray(p.position);
   gl.flush();
 };
