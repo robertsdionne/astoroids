@@ -7,6 +7,7 @@
     <script src="astoroids.js" type="application/javascript"></script>
     <script id="v" type="x-shader/x-vertex">
       uniform float size;
+      uniform bool wrap;
       uniform vec3 xyChi;
       uniform vec3 abRho;
       attribute vec2 position;
@@ -21,8 +22,13 @@
         r[0][1] = sin(chi);
         r[1][1] = cos(chi);
         vec2 xy = r * position.xy + xyChi.xy;
-        xy.x = (-xy.x + 1.0) * 2.0 - 1.0;
-        xy.y = (xy.y) * 2.0 - 1.0;
+        if (wrap) {
+          xy.x = fract(-xy.x + 1.0) * 2.0 - 1.0;
+          xy.y = fract(xy.y) * 2.0 - 1.0;
+        } else {
+          xy.x = (-xy.x + 1.0) * 2.0 - 1.0;
+          xy.y = (xy.y) * 2.0 - 1.0;
+        }
         gl_Position = vec4(xy, 0.0, 1.0);
         gl_PointSize = size;
       }

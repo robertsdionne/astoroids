@@ -31,9 +31,12 @@ Sound.prototype.play = function() {
   this.load();
   this.audio_.play();
 };
-
-var _s = new Sound('sound/wav/low.wav');
-var _t = new Sound('sound/wav/high.wav');
+var _s = new Sound(
+    navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/low.ogg'
+        : 'sound/wav/low.wav');
+var _t = new Sound(
+    navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/high.ogg'
+        : 'sound/wav/high.wav');
 var _i = 0;
 var _z = 1000;
 var _beep = function() {

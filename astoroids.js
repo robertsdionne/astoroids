@@ -55,9 +55,9 @@ var subdivideLoop = function(k, points) {
   var out = [];
   var m = points.length;
   for (var i = 0; i < m; i += 2) {
-    var x0 = points[i % m];
-    var y0 = points[(i+1) % m];
-    var x1 = points[(i+2) % m];
+    var x0 = 1.33512 * points[i % m];
+    var y0 =  points[(i+1) % m];
+    var x1 = 1.33512 * points[(i+2) % m];
     var y1 = points[(i+3) % m];
     for (var j = 0; j < k; ++j) {
       out.push(x0 + j * (x1 - x0) / k);
@@ -115,8 +115,13 @@ var asteroidYV = (Math.random() - 0.5) / 250.0;
 
 var pi = 3.141592653589793;
 
-var shoot = new Sound('sound/wav/shoot.wav');
-var thrust = new Sound('sound/wav/thrust.wav');
+var shoot = new Sound(
+    navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/shoot.ogg'
+        : 'sound/wav/shoot.wav');
+
+var thrust = new Sound(
+    navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/thrust.ogg'
+        : 'sound/wav/thrust.wav');
 
 var update = function() {
   X += XV;
@@ -179,6 +184,7 @@ var onCreate = function(gl, p, b, g, asteroid) {
   p.xyChi = gl.getUniformLocation(p, 'xyChi');
   p.abRho = gl.getUniformLocation(p, 'abRho');
   p.position = gl.getAttribLocation(p, 'position');
+  p.wrap = gl.getUniformLocation(p, 'wrap');
 
   var data = [];
   for (var i = 0; i < 10; ++i) {
@@ -207,7 +213,7 @@ var onCreate = function(gl, p, b, g, asteroid) {
   gl.bufferData(gl.ARRAY_BUFFER, d.byteLength, gl.STATIC_DRAW);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, d);
 
-  var asteroidBuffer = new Float32Array(subdivideLoop(10, big[3]));
+  var asteroidBuffer = new Float32Array(subdivideLoop(10, big[0]));
   gl.bindBuffer(gl.ARRAY_BUFFER, asteroid);
   gl.bufferData(gl.ARRAY_BUFFER, asteroidBuffer.byteLength, gl.STATIC_DRAW);
   gl.bufferSubData(gl.ARRAY_BUFFER, 0, asteroidBuffer);
@@ -228,6 +234,7 @@ var onDraw = function(gl, p, b, g, asteroid) {
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   gl.bindBuffer(gl.ARRAY_BUFFER, b);
   var xyChi = new Float32Array([wrap(X), wrap(Y), CHI]);
+  gl.uniform1i(p.wrap, false);
   gl.uniform3fv(p.xyChi, xyChi);
   gl.uniform3fv(p.abRho, abRho);
   gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
@@ -235,19 +242,20 @@ var onDraw = function(gl, p, b, g, asteroid) {
   gl.drawArrays(gl.LINE_STRIP, 0, N);
   gl.disableVertexAttribArray(p.position);
 
-//gl.bindBuffer(gl.ARRAY_BUFFER, g);
-//var xyChi = new Float32Array([wrap(-0.02 * X), wrap(-0.02 * Y), 0.0]);
-//gl.uniform1f(p.size, 0.7);
-//gl.uniform3fv(p.xyChi, xyChi);
-//gl.uniform3fv(p.abRho, abRho);
-//gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
-//gl.enableVertexAttribArray(p.position);
-//gl.drawArrays(gl.POINTS, 0, M);
-//gl.disableVertexAttribArray(p.position);
-//gl.flush();
+  gl.bindBuffer(gl.ARRAY_BUFFER, g);
+  var xyChi = new Float32Array([-0.02 * X, -0.02 * Y, 0.0]);
+  gl.uniform1i(p.wrap, true);
+  gl.uniform1f(p.size, 0.7);
+  gl.uniform3fv(p.xyChi, xyChi);
+  gl.uniform3fv(p.abRho, abRho);
+  gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(p.position);
+  gl.drawArrays(gl.POINTS, 0, M);
+  gl.disableVertexAttribArray(p.position);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, g);
   var xyChi = new Float32Array([wrap(BX), wrap(BY), 0.0]);
+  gl.uniform1i(p.wrap, false);
   gl.uniform1f(p.size, 2.5);
   gl.uniform3fv(p.xyChi, xyChi);
   gl.uniform3fv(p.abRho, abRho);
@@ -258,12 +266,13 @@ var onDraw = function(gl, p, b, g, asteroid) {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, asteroid);
   var xyChi = new Float32Array([wrap(asteroidX), wrap(asteroidY), 0.0]);
+  gl.uniform1i(p.wrap, false);
   gl.uniform1f(p.size, 1.0);
   gl.uniform3fv(p.xyChi, xyChi);
   gl.uniform3fv(p.abRho, abRho);
   gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
   gl.enableVertexAttribArray(p.position);
-  gl.drawArrays(gl.LINE_LOOP, 0, 110);
+  gl.drawArrays(gl.LINE_LOOP, 0, 120);
   gl.disableVertexAttribArray(p.position);
   gl.flush();
 };
