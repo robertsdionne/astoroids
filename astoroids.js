@@ -67,66 +67,13 @@ var subdivideLoop = function(k, points) {
   return out;
 };
 
-var keys = {
-  up: false,
-  down: false,
-  left: false,
-  right: false,
-  fire: false
-};
 
-var keydown = function(e) {
-  if (!e.which) {e.which = e.keyCode;}
-  switch(e.which) {
-    case 32:
-      keys.fire = true;
-      break;
-    case 37:
-      keys.left = true;
-      break;
-    case 38:
-      keys.up = true;
-      break;
-    case 39:
-      keys.right = true;
-      break;
-    case 40:
-      keys.down = true;
-      break;
-    default:
-      return true;
-  }
-  return false;
-};
+var keys = new Keys();
 
-var keyup = function(e) {
-  if (!e.which) {e.which = e.keyCode;}
-  switch(e.which) {
-    case 32:
-      keys.fire = false;
-      break;
-    case 37:
-      keys.left = false;
-      break;
-    case 38:
-      keys.up = false;
-      break;
-    case 39:
-      keys.right = false;
-      break;
-    case 40:
-      keys.down = false;
-      break;
-    default:
-      return true;
-  }
-  return false;
-};
 
 var load = function() {
   var canvas = document.getElementById('c');
-  document.body.onkeydown = keydown;
-  document.body.onkeyup = keyup;
+  keys.install(document.body);
   canvas.width = 640;
   canvas.height = 640;
   var gl = canvas.getContext('experimental-webgl');
@@ -168,6 +115,9 @@ var asteroidYV = (Math.random() - 0.5) / 250.0;
 
 var pi = 3.141592653589793;
 
+var shoot = new Sound('sound/wav/shoot.wav');
+var thrust = new Sound('sound/wav/thrust.wav');
+
 var update = function() {
   X += XV;
   Y += YV;
@@ -175,24 +125,29 @@ var update = function() {
   BY += BYV;
   asteroidX += asteroidXV;
   asteroidY += asteroidYV;
-  if (keys.fire) {
+  if (keys.justDown(Key.FIRE)) {
+    shoot.play();
     BX = X;
     BY = Y;
     BXV = XV + 0.005 * Math.cos(2.0 * pi * CHI);
     BYV = YV + 0.005 * Math.sin(2.0 * pi * CHI);
   }
-  if (keys.up) {
+  if (keys.isDown(Key.UP)) {
+    if (keys.justDown(Key.UP)) {
+      thrust.play();
+    }
     XV += 0.00005 * Math.cos(2.0 * pi * CHI);
     YV += 0.00005 * Math.sin(2.0 * pi * CHI);
   }
-  if (keys.left) {
+  if (keys.isDown(Key.LEFT)) {
     CHI -= 0.01;
   }
-  if (keys.right) {
+  if (keys.isDown(Key.RIGHT)) {
     CHI += 0.01;
   }
   XV *= 0.995;
   YV *= 0.995;
+  keys.update();
 };
 
 var N = 23;
