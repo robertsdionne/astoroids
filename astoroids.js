@@ -5,6 +5,9 @@ goog.provide('astoroids');
 goog.require('astoroids.Key');
 goog.require('astoroids.Keys');
 goog.require('astoroids.Sound');
+goog.require('astoroids.Thing');
+goog.require('astoroids.updateBullet');
+goog.require('astoroids.updateShip');
 
 
 var big = [
@@ -101,18 +104,8 @@ astoroids.load = function() {
   }, 10);
 };
 
-var X = 0.0;
-var Y = 0.0;
-var CHI = 0.00;
-
-var XV = 0.0;
-var YV = 0.0;
-
-var BX = 0.0;
-var BY = 0.0;
-
-var BXV = 0.0;
-var BYV = 0.0;
+var ship = new astoroids.Thing();
+var bullet = new astoroids.Thing();
 
 var asteroidX = Math.random();
 var asteroidY = Math.random();
@@ -131,34 +124,30 @@ var thrust = new astoroids.Sound(
         : 'sound/wav/thrust.wav');
 
 var update = function() {
-  X += XV;
-  Y += YV;
-  BX += BXV;
-  BY += BYV;
   asteroidX += asteroidXV;
   asteroidY += asteroidYV;
   if (keys.justDown(astoroids.Key.FIRE)) {
     shoot.play();
-    BX = X;
-    BY = Y;
-    BXV = XV + 0.005 * Math.cos(2.0 * pi * CHI);
-    BYV = YV + 0.005 * Math.sin(2.0 * pi * CHI);
+    bullet.x = ship.x;
+    bullet.y = ship.y;
+    bullet.xv = ship.xv + 0.005 * Math.cos(2.0 * pi * ship.heading);
+    bullet.yv = ship.yv + 0.005 * Math.sin(2.0 * pi * ship.heading);
   }
   if (keys.isDown(astoroids.Key.UP)) {
     if (keys.justDown(astoroids.Key.UP)) {
       thrust.play();
     }
-    XV += 0.00005 * Math.cos(2.0 * pi * CHI);
-    YV += 0.00005 * Math.sin(2.0 * pi * CHI);
+    ship.xv += 0.00005 * Math.cos(2.0 * pi * ship.heading);
+    ship.yv += 0.00005 * Math.sin(2.0 * pi * ship.heading);
   }
   if (keys.isDown(astoroids.Key.LEFT)) {
-    CHI -= 0.01;
+    ship.heading -= 0.01;
   }
   if (keys.isDown(astoroids.Key.RIGHT)) {
-    CHI += 0.01;
+    ship.heading += 0.01;
   }
-  XV *= 0.995;
-  YV *= 0.995;
+  ship.update(astoroids.updateShip);
+  bullet.update(astoroids.updateBullet);
   keys.update();
 };
 
@@ -240,7 +229,7 @@ var wrap = function(coord) {
 var onDraw = function(gl, p, b, g, asteroid) {
   gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT);
   gl.bindBuffer(gl.ARRAY_BUFFER, b);
-  var xyChi = new Float32Array([wrap(X), wrap(Y), CHI]);
+  var xyChi = new Float32Array([wrap(ship.x), wrap(ship.y), ship.heading]);
   gl.uniform1i(p.wrap, false);
   gl.uniform3fv(p.xyChi, xyChi);
   gl.uniform3fv(p.abRho, abRho);
@@ -250,7 +239,7 @@ var onDraw = function(gl, p, b, g, asteroid) {
   gl.disableVertexAttribArray(p.position);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, g);
-  var xyChi = new Float32Array([-0.02 * X, -0.02 * Y, 0.0]);
+  var xyChi = new Float32Array([-0.02 * ship.x, -0.02 * ship.y, 0.0]);
   gl.uniform1i(p.wrap, true);
   gl.uniform1f(p.size, 0.7);
   gl.uniform3fv(p.xyChi, xyChi);
@@ -261,7 +250,7 @@ var onDraw = function(gl, p, b, g, asteroid) {
   gl.disableVertexAttribArray(p.position);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, g);
-  var xyChi = new Float32Array([wrap(BX), wrap(BY), 0.0]);
+  var xyChi = new Float32Array([wrap(bullet.x), wrap(bullet.y), 0.0]);
   gl.uniform1i(p.wrap, false);
   gl.uniform1f(p.size, 2.5);
   gl.uniform3fv(p.xyChi, xyChi);

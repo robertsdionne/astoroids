@@ -12,5 +12,5 @@ astoroids.Thing = function(opt_x, opt_y, opt_xv, opt_yv, opt_heading) {
 
 
 astoroids.Thing.prototype.update = function(strategy) {
-  strategy.apply(this);
+  strategy.call(this, this);
 };
