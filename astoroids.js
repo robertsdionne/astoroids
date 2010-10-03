@@ -1,5 +1,12 @@
 // Copyright 2010 Robert Scott Dionne. All Rights Reserved.
 
+goog.provide('astoroids');
+
+goog.require('astoroids.Key');
+goog.require('astoroids.Keys');
+goog.require('astoroids.Sound');
+
+
 var big = [
   [-0.05924, -0.03620,
    -0.05924,  0.02010,
@@ -68,10 +75,10 @@ var subdivideLoop = function(k, points) {
 };
 
 
-var keys = new Keys();
+var keys = new astoroids.Keys();
 
 
-var load = function() {
+astoroids.load = function() {
   var canvas = document.getElementById('c');
   keys.install(document.body);
   canvas.width = 640;
@@ -115,11 +122,11 @@ var asteroidYV = (Math.random() - 0.5) / 250.0;
 
 var pi = 3.141592653589793;
 
-var shoot = new Sound(
+var shoot = new astoroids.Sound(
     navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/shoot.ogg'
         : 'sound/wav/shoot.wav');
 
-var thrust = new Sound(
+var thrust = new astoroids.Sound(
     navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/thrust.ogg'
         : 'sound/wav/thrust.wav');
 
@@ -130,24 +137,24 @@ var update = function() {
   BY += BYV;
   asteroidX += asteroidXV;
   asteroidY += asteroidYV;
-  if (keys.justDown(Key.FIRE)) {
+  if (keys.justDown(astoroids.Key.FIRE)) {
     shoot.play();
     BX = X;
     BY = Y;
     BXV = XV + 0.005 * Math.cos(2.0 * pi * CHI);
     BYV = YV + 0.005 * Math.sin(2.0 * pi * CHI);
   }
-  if (keys.isDown(Key.UP)) {
-    if (keys.justDown(Key.UP)) {
+  if (keys.isDown(astoroids.Key.UP)) {
+    if (keys.justDown(astoroids.Key.UP)) {
       thrust.play();
     }
     XV += 0.00005 * Math.cos(2.0 * pi * CHI);
     YV += 0.00005 * Math.sin(2.0 * pi * CHI);
   }
-  if (keys.isDown(Key.LEFT)) {
+  if (keys.isDown(astoroids.Key.LEFT)) {
     CHI -= 0.01;
   }
-  if (keys.isDown(Key.RIGHT)) {
+  if (keys.isDown(astoroids.Key.RIGHT)) {
     CHI += 0.01;
   }
   XV *= 0.995;

@@ -1,5 +1,10 @@
+// Copyright 2010.
 
-var Key = {
+goog.provide('astoroids.Key');
+goog.provide('astoroids.Keys');
+
+
+astoroids.Key = {
   FIRE: 32,
   LEFT: 37,
   UP: 38,
@@ -8,59 +13,59 @@ var Key = {
 };
 
 
-var Keys = function() {
+astoroids.Keys = function() {
   this.keys_ = [];
   this.oldKeys_ = [];
   this.element_;
 };
 
 
-Keys.prototype.install = function(element) {
+astoroids.Keys.prototype.install = function(element) {
   this.element_ = element;
-  this.element_.onkeydown = bind(this.onKeyDown_, this);
-  this.element_.onkeyup = bind(this.onKeyUp_, this);
+  this.element_.onkeydown = goog.bind(this.onKeyDown_, this);
+  this.element_.onkeyup = goog.bind(this.onKeyUp_, this);
 };
 
 
-Keys.prototype.isDown = function(key) {
+astoroids.Keys.prototype.isDown = function(key) {
   return this.keys_[key];
 };
 
 
-Keys.prototype.isUp = function(key) {
+astoroids.Keys.prototype.isUp = function(key) {
   return !this.keys_[key];
 };
 
 
-Keys.prototype.justDown = function(key) {
+astoroids.Keys.prototype.justDown = function(key) {
   return this.keys_[key] && !this.oldKeys_[key];
 };
 
 
-Keys.prototype.justUp = function(key) {
+astoroids.Keys.prototype.justUp = function(key) {
   return !this.keys_[key] && this.oldKeys_[key];
 };
 
 
-Keys.prototype.onKeyDown_ = function(e) {
+astoroids.Keys.prototype.onKeyDown_ = function(e) {
   this.keys_[e.keyCode] = true;
   return false;
 };
 
 
-Keys.prototype.onKeyUp_ = function(e) {
+astoroids.Keys.prototype.onKeyUp_ = function(e) {
   this.keys_[e.keyCode] = false;
   return false;
 };
 
 
-Keys.prototype.update = function() {
+astoroids.Keys.prototype.update = function() {
   this.oldKeys_ = this.keys_.slice();
 };
 
 
-Keys.prototype.uninstall = function() {
-  this.element_.onkeydown = nullFunc;
-  this.element_.onkeyup = nullFunc;
+astoroids.Keys.prototype.uninstall = function() {
+  this.element_.onkeydown = goog.nullFunc;
+  this.element_.onkeyup = goog.nullFunc;
   this.element_ = null;
 };
