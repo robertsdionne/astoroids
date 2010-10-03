@@ -1,6 +1,12 @@
 
+goog.provide('astoroids.updateAsteroid');
 goog.provide('astoroids.updateBullet');
 goog.provide('astoroids.updateShip');
+
+
+astoroids.updateAsteroid = function(asteroid) {
+  astoroids.updatePosition_(asteroid);
+};
 
 
 astoroids.updateBullet = function(bullet) {
