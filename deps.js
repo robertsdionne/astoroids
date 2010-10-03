@@ -4,3 +4,4 @@ goog.addDependency('../../../astoroids/astoroids.js', ['astoroids'], ['astoroids
 goog.addDependency('../../../astoroids/deps.js', [], []);
 goog.addDependency('../../../astoroids/keys.js', ['astoroids.Key', 'astoroids.Keys'], []);
 goog.addDependency('../../../astoroids/sound.js', ['astoroids.Sound'], []);
+goog.addDependency('../../../astoroids/thing.js', ['astoroids.Thing'], []);
