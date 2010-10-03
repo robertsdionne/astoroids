@@ -107,20 +107,14 @@ astoroids.load = function() {
 
 var ship = new astoroids.Thing();
 var bullet = new astoroids.Thing();
-
 var asteroid = new astoroids.Thing(
   Math.random(), Math.random(),
   (Math.random() - 0.5) / 250.0, (Math.random() - 0.5) / 250.0);
 
 var pi = 3.141592653589793;
 
-var shoot = new astoroids.Sound(
-    navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/shoot.ogg'
-        : 'sound/wav/shoot.wav');
-
-var thrust = new astoroids.Sound(
-    navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/thrust.ogg'
-        : 'sound/wav/thrust.wav');
+var shoot = new astoroids.Sound('shoot');
+var thrust = new astoroids.Sound('thrust');
 
 var update = function() {
   if (keys.justDown(astoroids.Key.FIRE)) {

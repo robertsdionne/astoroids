@@ -8,11 +8,11 @@
 goog.provide('astoroids.Sound');
 
 
-astoroids.Sound = function(src) {
+astoroids.Sound = function(name) {
   /**
    * @type {string}
    */
-  this.src_ = src;
+  this.name_ = name;
 
   /**
    * @type {Audio}
@@ -21,10 +21,20 @@ astoroids.Sound = function(src) {
 };
 
 
+astoroids.Sound.OGG_FORMAT = 'sound/ogg/%s.ogg';
+
+
+astoroids.Sound.WAV_FORMAT = 'sound/wav/%s.wav';
+
+
 astoroids.Sound.prototype.load = function() {
   if (!this.audio_) {
     this.audio_ = new Audio();
-    this.audio_.src = this.src_;
+    if (navigator.userAgent.indexOf('Chrome') > -1) {
+      this.audio_.src = astoroids.Sound.OGG_FORMAT.replace('%s', this.name_);
+    } else {
+      this.audio_.src = astoroids.Sound.WAV_FORMAT.replace('%s', this.name_);
+    }
   }
   this.audio_.load();
 };
@@ -37,12 +47,8 @@ astoroids.Sound.prototype.play = function() {
 
 
 (function() {
-  var _s = new astoroids.Sound(
-      navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/low.ogg'
-          : 'sound/wav/low.wav');
-  var _t = new astoroids.Sound(
-      navigator.userAgent.indexOf('Chrome') > -1 ? 'sound/ogg/high.ogg'
-          : 'sound/wav/high.wav');
+  var _s = new astoroids.Sound('low');
+  var _t = new astoroids.Sound('high');
   var _i = 0;
   var _z = 1000;
   var _beep = function() {
