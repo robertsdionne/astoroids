@@ -2,7 +2,7 @@
 // Please do not edit.
 goog.addDependency('../../../astoroids/astoroids.js', ['astoroids'], ['astoroids.Key', 'astoroids.Keys', 'astoroids.Sound', 'astoroids.Thing', 'astoroids.updateAsteroid', 'astoroids.updateBullet', 'astoroids.updateShip']);
 goog.addDependency('../../../astoroids/deps.js', [], []);
-goog.addDependency('../../../astoroids/keys.js', ['astoroids.Key', 'astoroids.Keys'], []);
+goog.addDependency('../../../astoroids/keys.js', ['astoroids.Key', 'astoroids.Keys'], ['goog.events', 'goog.events.KeyHandler']);
 goog.addDependency('../../../astoroids/sound.js', ['astoroids.Sound'], []);
 goog.addDependency('../../../astoroids/thing.js', ['astoroids.Thing'], []);
 goog.addDependency('../../../astoroids/update.js', ['astoroids.updateAsteroid', 'astoroids.updateBullet', 'astoroids.updateShip'], []);

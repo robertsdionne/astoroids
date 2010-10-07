@@ -3,6 +3,9 @@
 goog.provide('astoroids.Key');
 goog.provide('astoroids.Keys');
 
+goog.require('goog.events');
+goog.require('goog.events.KeyHandler');
+
 
 astoroids.Key = {
   FIRE: 32,
@@ -17,13 +20,17 @@ astoroids.Keys = function() {
   this.keys_ = [];
   this.oldKeys_ = [];
   this.element_;
+  this.handler_ = new goog.events.KeyHandler();
 };
 
 
 astoroids.Keys.prototype.install = function(element) {
   this.element_ = element;
-  this.element_.onkeydown = goog.bind(this.onKeyDown_, this);
-  this.element_.onkeyup = goog.bind(this.onKeyUp_, this);
+  this.handler_.attach(element);
+  goog.events.listen(
+      this.handler_, 'key', goog.bind(this.onKeyDown_, this));
+  goog.events.listen(
+      this.element_, 'keyup', goog.bind(this.onKeyUp_, this));
 };
 
 
@@ -49,13 +56,11 @@ astoroids.Keys.prototype.justUp = function(key) {
 
 astoroids.Keys.prototype.onKeyDown_ = function(e) {
   this.keys_[e.keyCode] = true;
-  return false;
 };
 
 
 astoroids.Keys.prototype.onKeyUp_ = function(e) {
   this.keys_[e.keyCode] = false;
-  return false;
 };
 
 
@@ -65,7 +70,7 @@ astoroids.Keys.prototype.update = function() {
 
 
 astoroids.Keys.prototype.uninstall = function() {
-  this.element_.onkeydown = goog.nullFunc;
-  this.element_.onkeyup = goog.nullFunc;
+  goog.events.removeAll(this.element_);
+  this.handler_.detach();
   this.element_ = null;
 };

@@ -84,7 +84,7 @@ var keys = new astoroids.Keys();
 
 astoroids.load = function() {
   var canvas = document.getElementById('c');
-  keys.install(document.body);
+  keys.install(window);
   canvas.width = 640;
   canvas.height = 640;
   var gl = canvas.getContext('experimental-webgl');
