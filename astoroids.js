@@ -111,12 +111,14 @@ var asteroids = [];
 for (var i = 0; i < 3; ++i) {
   var asteroid = new astoroids.Thing(
     Math.random(), Math.random(),
-    (Math.random() - 0.5) / 250.0, (Math.random() - 0.5) / 250.0);
+    (Math.random() - 0.5) / 250.0, (Math.random() - 0.5) / 250.0,
+    0.0, 0.14);
   asteroids.push(asteroid);
 }
 
 var pi = 3.141592653589793;
 
+var boom = new astoroids.Sound('boom');
 var shoot = new astoroids.Sound('shoot');
 var thrust = new astoroids.Sound('thrust');
 
@@ -147,10 +149,23 @@ var update = function() {
     ship.heading += 0.01;
   }
   for (var i = 0; i < asteroids.length; ++i) {
-    asteroids[i].update(astoroids.updateAsteroid);
+    for (var j = 0; j < bullets.length; ++j) {
+      if (asteroids[i] && bullets[j] && asteroids[i].collide(bullets[j])) {
+        boom.play();
+        delete asteroids[i];
+        delete bullets[j];
+      }
+    }
+  }
+  for (var i = 0; i < asteroids.length; ++i) {
+    if (asteroids[i]) {
+      asteroids[i].update(astoroids.updateAsteroid);
+    }
   }
   for (var i = 0; i < bullets.length; ++i) {
-    bullets[i].update(astoroids.updateBullet);
+    if (bullets[i]) {
+      bullets[i].update(astoroids.updateBullet);
+    }
   }
   ship.update(astoroids.updateShip);
   keys.update();
@@ -255,30 +270,35 @@ var onDraw = function(gl, p, b, g, asteroidBuffer) {
   gl.disableVertexAttribArray(p.position);
 
   for (var i = 0; i < bullets.length; ++i) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, g);
-    var xyChi = new Float32Array([wrap(bullets[i].x), wrap(bullets[i].y), 0.0]);
-    gl.uniform1i(p.wrap, false);
-    gl.uniform1f(p.size, 2.5);
-    gl.uniform3fv(p.xyChi, xyChi);
-    gl.uniform3fv(p.abRho, abRho);
-    gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(p.position);
-    gl.drawArrays(gl.POINTS, 0, 1);
-    gl.disableVertexAttribArray(p.position);
+    if (bullets[i]) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, g);
+      var xyChi =
+          new Float32Array([wrap(bullets[i].x), wrap(bullets[i].y), 0.0]);
+      gl.uniform1i(p.wrap, false);
+      gl.uniform1f(p.size, 2.5);
+      gl.uniform3fv(p.xyChi, xyChi);
+      gl.uniform3fv(p.abRho, abRho);
+      gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(p.position);
+      gl.drawArrays(gl.POINTS, 0, 1);
+      gl.disableVertexAttribArray(p.position);
+    }
   }
 
   for (var i = 0; i < asteroids.length; ++i) {
-    gl.bindBuffer(gl.ARRAY_BUFFER, asteroidBuffer);
-    var xyChi =
-        new Float32Array([wrap(asteroids[i].x), wrap(asteroids[i].y), 0.0]);
-    gl.uniform1i(p.wrap, false);
-    gl.uniform1f(p.size, 1.0);
-    gl.uniform3fv(p.xyChi, xyChi);
-    gl.uniform3fv(p.abRho, abRho);
-    gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(p.position);
-    gl.drawArrays(gl.LINE_LOOP, 0, 120);
-    gl.disableVertexAttribArray(p.position);
+    if (asteroids[i]) {
+      gl.bindBuffer(gl.ARRAY_BUFFER, asteroidBuffer);
+      var xyChi =
+          new Float32Array([wrap(asteroids[i].x), wrap(asteroids[i].y), 0.0]);
+      gl.uniform1i(p.wrap, false);
+      gl.uniform1f(p.size, 1.0);
+      gl.uniform3fv(p.xyChi, xyChi);
+      gl.uniform3fv(p.abRho, abRho);
+      gl.vertexAttribPointer(p.position, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(p.position);
+      gl.drawArrays(gl.LINE_LOOP, 0, 120);
+      gl.disableVertexAttribArray(p.position);
+    }
   }
   gl.flush();
 };
