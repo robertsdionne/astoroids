@@ -8,16 +8,21 @@
 goog.provide('astoroids.Sound');
 
 
-astoroids.Sound = function(name) {
+astoroids.Sound = function(name, opt_count) {
   /**
    * @type {string}
    */
   this.name_ = name;
 
+  this.count_ = opt_count || 1;
+
+
+  this.next_ = 0;
+
   /**
    * @type {Audio}
    */
-  this.audio_;
+  this.audio_ = [];
 };
 
 
@@ -28,22 +33,27 @@ astoroids.Sound.WAV_FORMAT = 'sound/wav/%s.wav';
 
 
 astoroids.Sound.prototype.load = function() {
-  if (!this.audio_) {
-    this.audio_ = new Audio();
-    if (navigator.userAgent.indexOf('Chrome') > -1) {
-      this.audio_.src = astoroids.Sound.OGG_FORMAT.replace('%s', this.name_);
-    } else {
-      this.audio_.src = astoroids.Sound.WAV_FORMAT.replace('%s', this.name_);
+  if (this.audio_.length < this.count_) {
+    for (var i = 0; i < this.count_; ++i) {
+      this.audio_[i] = new Audio();
+      if (navigator.userAgent.indexOf('Chrome') > -1) {
+        this.audio_[i].src =
+            astoroids.Sound.OGG_FORMAT.replace('%s', this.name_);
+      } else {
+        this.audio_[i].src =
+            astoroids.Sound.WAV_FORMAT.replace('%s', this.name_);
+      }
     }
   }
-  this.audio_.load();
+  this.audio_[this.next_].load();
 };
 
 
 astoroids.Sound.prototype.play = function(opt_volume) {
   this.load();
-  this.audio_.volume = opt_volume || 1;
-  this.audio_.play();
+  this.audio_[this.next_].volume = opt_volume || 1;
+  this.audio_[this.next_].play();
+  this.next_ = (this.next_ + 1) % this.count_;
 };
 
 

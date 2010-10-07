@@ -118,8 +118,8 @@ for (var i = 0; i < 3; ++i) {
 
 var pi = 3.141592653589793;
 
-var boom = new astoroids.Sound('boom');
-var shoot = new astoroids.Sound('shoot');
+var boom = new astoroids.Sound('boom', 10);
+var shoot = new astoroids.Sound('shoot', 10);
 var thrust = new astoroids.Sound('thrust');
 
 var update = function() {
