@@ -130,6 +130,8 @@ var update = function() {
         ship.y,
         ship.xv + 0.005 * Math.cos(2.0 * pi * ship.heading),
         ship.yv + 0.005 * Math.sin(2.0 * pi * ship.heading));
+    ship.xv -= 0.0005 * Math.cos(2.0 * pi * ship.heading);
+    ship.yv -= 0.0005 * Math.sin(2.0 * pi * ship.heading);
     bullets.push(bullet);
     if (bullets.length > 10) {
       bullets.shift();
@@ -139,8 +141,8 @@ var update = function() {
     if (keys.justDown(astoroids.Key.UP)) {
       thrust.play();
     }
-    ship.xv += 0.00005 * Math.cos(2.0 * pi * ship.heading);
-    ship.yv += 0.00005 * Math.sin(2.0 * pi * ship.heading);
+    ship.xv += 0.00008 * Math.cos(2.0 * pi * ship.heading);
+    ship.yv += 0.00008 * Math.sin(2.0 * pi * ship.heading);
   }
   if (keys.isDown(astoroids.Key.LEFT)) {
     ship.heading -= 0.01;
@@ -148,15 +150,21 @@ var update = function() {
   if (keys.isDown(astoroids.Key.RIGHT)) {
     ship.heading += 0.01;
   }
+  var newAsteroids = [];
   for (var i = 0; i < asteroids.length; ++i) {
     for (var j = 0; j < bullets.length; ++j) {
       if (asteroids[i] && bullets[j] && asteroids[i].collide(bullets[j])) {
-        boom.play();
-        delete asteroids[i];
+        var dx = asteroids[i].xv - bullets[j].xv;
+        var dy = asteroids[i].yv - bullets[j].yv;
+        var p = dx * dx + dy * dy;
+        boom.play(Math.min(1.0, Math.sqrt(1000 * p)));
+        asteroids[i].xv += bullets[j].xv * 0.01;
+        asteroids[i].yv += bullets[j].yv * 0.01;
         delete bullets[j];
       }
     }
   }
+  asteroids = asteroids.concat(newAsteroids);
   for (var i = 0; i < asteroids.length; ++i) {
     if (asteroids[i]) {
       asteroids[i].update(astoroids.updateAsteroid);

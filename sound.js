@@ -40,8 +40,9 @@ astoroids.Sound.prototype.load = function() {
 };
 
 
-astoroids.Sound.prototype.play = function() {
+astoroids.Sound.prototype.play = function(opt_volume) {
   this.load();
+  this.audio_.volume = opt_volume || 1;
   this.audio_.play();
 };
 
