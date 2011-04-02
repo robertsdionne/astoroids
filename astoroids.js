@@ -139,7 +139,6 @@ var update = function() {
   if (keys.isPressed(astoroids.Key.RIGHT)) {
     ship.heading += 0.01;
   }
-  var newAsteroids = [];
   for (var i = 0; i < asteroids.length; ++i) {
     for (var j = 0; j < bullets.length; ++j) {
       if (asteroids[i] && bullets[j] && asteroids[i].collide(bullets[j])) {
@@ -153,7 +152,6 @@ var update = function() {
       }
     }
   }
-  asteroids = asteroids.concat(newAsteroids);
   for (var i = 0; i < asteroids.length; ++i) {
     if (asteroids[i]) {
       asteroids[i].update(astoroids.updateAsteroid);
