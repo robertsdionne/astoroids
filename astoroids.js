@@ -1,16 +1,5 @@
 // Copyright 2010 Robert Scott Dionne. All Rights Reserved.
 
-goog.provide('astoroids');
-
-goog.require('astoroids.Key');
-goog.require('astoroids.Keys');
-goog.require('astoroids.Sound');
-goog.require('astoroids.Thing');
-goog.require('astoroids.updateAsteroid');
-goog.require('astoroids.updateBullet');
-goog.require('astoroids.updateShip');
-
-
 var big = [
   [-0.05924, -0.03620,
    -0.05924,  0.02010,
@@ -79,12 +68,12 @@ var subdivideLoop = function(k, points) {
 };
 
 
-var keys = new astoroids.Keys();
+var keys = new astoroids.Keys(document);
 
 
 astoroids.load = function() {
   var canvas = document.getElementById('c');
-  keys.install(window);
+  keys.install();
   canvas.width = 640;
   canvas.height = 640;
   var gl = canvas.getContext('experimental-webgl');
@@ -102,7 +91,7 @@ astoroids.load = function() {
     }
     update();
     onDraw(gl, p, b, g, asteroidBuffer);
-  }, 10);
+  }, 1000/60);
 };
 
 var ship = new astoroids.Thing();
@@ -123,7 +112,7 @@ var shoot = new astoroids.Sound('shoot', 10);
 var thrust = new astoroids.Sound('thrust');
 
 var update = function() {
-  if (keys.justDown(astoroids.Key.FIRE)) {
+  if (keys.justPressed(astoroids.Key.FIRE)) {
     shoot.play();
     var bullet = new astoroids.Thing(
         ship.x,
@@ -137,17 +126,17 @@ var update = function() {
       bullets.shift();
     }
   }
-  if (keys.isDown(astoroids.Key.UP)) {
-    if (keys.justDown(astoroids.Key.UP)) {
+  if (keys.isPressed(astoroids.Key.UP)) {
+    if (keys.justPressed(astoroids.Key.UP)) {
       thrust.play();
     }
     ship.xv += 0.00008 * Math.cos(2.0 * pi * ship.heading);
     ship.yv += 0.00008 * Math.sin(2.0 * pi * ship.heading);
   }
-  if (keys.isDown(astoroids.Key.LEFT)) {
+  if (keys.isPressed(astoroids.Key.LEFT)) {
     ship.heading -= 0.01;
   }
-  if (keys.isDown(astoroids.Key.RIGHT)) {
+  if (keys.isPressed(astoroids.Key.RIGHT)) {
     ship.heading += 0.01;
   }
   var newAsteroids = [];

@@ -1,5 +1,3 @@
-goog.provide('astoroids.Aabb');
-
 
 astoroids.Aabb = function(x, y, width, height) {
   this.setPosition(x, y);

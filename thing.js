@@ -1,9 +1,4 @@
 
-goog.provide('astoroids.Thing');
-
-goog.require('astoroids.Aabb');
-
-
 astoroids.Thing = function(
     opt_x, opt_y, opt_xv, opt_yv, opt_heading, opt_size) {
   this.x = opt_x || 0.0;

@@ -5,9 +5,6 @@
  * @author robertsdionne@gmail.com (Robert Scott Dionne)
  */
 
-goog.provide('astoroids.Sound');
-
-
 astoroids.Sound = function(name, opt_count) {
   /**
    * @type {string}
