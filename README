@@ -1,0 +1,16 @@
+Astoroids
+Author: Robert Dionne
+
+Astoroids is an attempt to reimplement the game Asteroids but mapped to the surface of a torus. The game of Asteroids wraps the edges of the screen, which makes the square of the game environment homeomorphic to a torus. I wanted to see how the game would feel when rendered on a torus instead of a square. Currently, the mapping I use deforms the ship depending on where you are on the surface, but I'd like to eventually implement a mapping with the correct surface geometry to keep scales uniform across the surface.
+
+Mac OS X and Windows 7 support:
+Google Chrome 10: http://www.google.com/chrome
+Mozilla Firefox 4: http://www.mozilla.com/en-US/firefox/new/
+
+To execute:
+1) Download astoroids as a zip file:
+https://github.com/robertsdionne/astoroids/zipball/master
+
+2) Unzip astoroids.
+
+3) Open file:///path/to/astoroids.html in your browser for asteroids on a torus, or file:///path/to/astoroids_flat.html for a more traditional asteroids.
