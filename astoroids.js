@@ -175,7 +175,6 @@ var onCreate = function(gl, p, b, g, asteroid) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   var v = gl.createShader(gl.VERTEX_SHADER);
   gl.shaderSource(v, document.getElementById('v').text);
-  var result = gl.compileShader(v);
   gl.compileShader(v);
   if (!gl.getShaderParameter(v, gl.COMPILE_STATUS)) {
     throw new Error(gl.getShaderInfoLog(v));
@@ -191,6 +190,9 @@ var onCreate = function(gl, p, b, g, asteroid) {
   gl.attachShader(p, f);
   gl.deleteShader(f); f = null;
   gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
+    throw new Error(gl.getProgramInfoLog(f));
+  }
   gl.useProgram(p);
 
   p.size = gl.getUniformLocation(p, 'size');
