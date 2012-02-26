@@ -1,16 +1,24 @@
 Astoroids
-Author: Robert Dionne
+Robert Dionne
+February 25, 2012
 
-Astoroids is an attempt to reimplement the game Asteroids but mapped to the surface of a torus. The game of Asteroids wraps the edges of the screen, which makes the square of the game environment homeomorphic to a torus. I wanted to see how the game would feel when rendered on a torus instead of a square. Currently, the mapping I use deforms the ship depending on where you are on the surface, but I'd like to eventually implement a mapping with the correct surface geometry to keep scales uniform across the surface.
+Astoroids is an attempt to reimplement the game Asteroids but mapped to the surface of a torus. The original game of Asteroids wraps the edges of the screen, which makes the square of the game environment homeomorphic to a torus. I wanted to see how the game would feel when rendered on a torus instead of a square. Currently, the mapping I use deforms the ship depending on where you are on the surface, but I'd like to eventually implement a mapping with the correct surface geometry to keep scales uniform across the surface, using techniques from differential geometry.
 
-Mac OS X and Windows 7 support:
-Google Chrome 10: http://www.google.com/chrome
-Mozilla Firefox 4: http://www.mozilla.com/en-US/firefox/new/
+Video: http://goo.gl/hWc8p OR https://docs.google.com/file/d/0B5t1j58WWjsiYWMxZDY2ZWUtYWU5Ni00NmY1LWI0MTctMzM0Y2I0NDJhOWQ3/edit
 
-To execute:
-1) Download astoroids as a zip file:
-https://github.com/robertsdionne/astoroids/zipball/master
+Requirements:
+1) Macbook Pro running Mac OS X Snow Leopard.
+2a) Google Chrome 17.0.963.56 or better: http://www.google.com/chrome
+  OR
+2b) Mozilla Firefox 10.0.2 or better: http://www.mozilla.com/en-US/firefox/new/
 
-2) Unzip astoroids.
+Running:
+1a) Visit http://robertsdionne.github.com/astoroids/ in Google Chrome 17 or Mozilla Firefox 10.
+  OR
+1b) Visit http://robertsdionne.github.com/astoroids/flat.html in Google Chrome 17 or Mozilla Firefox 10 for a traditional square view.
 
-3) Open file:///path/to/astoroids.html in your browser for asteroids on a torus, or file:///path/to/astoroids_flat.html for a more traditional asteroids.
+Controls:
+  UP - Move ship foward.
+  LEFT - Yaw ship left.
+  RIGHT - Yaw ship right.
+  SPACE - Shoot ship gun.
